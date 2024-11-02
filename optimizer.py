@@ -3,6 +3,20 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 
+def greedy_algorithm(
+    drug_items, # Updated drug items (with the unit constraints)
+    number_of_carts
+):
+    sorted_units = sorted(drug_items, key=lambda x: x[1], reverse=True)
+    carts = [[] for _ in range(number_of_carts)]
+    cart_weights = [0] * number_of_carts
+
+    for unit, weight in sorted_units:
+        min_cart_index = cart_weights.index(min(cart_weights))
+        carts[min_cart_index].append((unit, weight))
+        cart_weights[min_cart_index] += weight
+    print(carts,unit,cart_weights)
+
 def optimize_cart_allocation(
     df, # Input DF with Drug Unit & Drug Count
     drug_unit_col, # drug unit col in df
@@ -23,19 +37,7 @@ def optimize_cart_allocation(
     if algorithm == 'greedy':
         greedy_algorithm(updated_drug_items,number_of_carts)
 
-def greedy_algorithm(
-    drug_items, # Updated drug items (with the unit constraints)
-    num_carts
-):
-    sorted_units = sorted(drug_items, key=lambda x: x[1], reverse=True)
-    carts = [[] for _ in range(num_carts)]
-    cart_weights = [0] * num_carts
 
-    for unit, weight in sorted_units:
-        min_cart_index = cart_weights.index(min(cart_weights))
-        carts[min_cart_index].append((unit, weight))
-        cart_weights[min_cart_index] += weight
-    print(carts,unit,cart_weights)
 
 
 
