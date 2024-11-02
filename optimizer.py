@@ -35,7 +35,7 @@ def optimize_cart_allocation(
     updated_drug_items = list(constrained_drug_items.items()) + unconstrained_drug_items
 
     if algorithm == 'greedy':
-        greedy_algorithm(updated_drug_items,number_of_carts)
+        return greedy_algorithm(updated_drug_items,number_of_carts)
 
 
 
