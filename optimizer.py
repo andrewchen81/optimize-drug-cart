@@ -15,7 +15,7 @@ def greedy_algorithm(
         min_cart_index = cart_weights.index(min(cart_weights))
         carts[min_cart_index].append((unit, weight))
         cart_weights[min_cart_index] += weight
-    print(carts,unit,cart_weights)
+    return carts,unit,cart_weights
 
 def optimize_cart_allocation(
     df, # Input DF with Drug Unit & Drug Count
