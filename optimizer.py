@@ -21,10 +21,11 @@ def optimize_cart_allocation(
     updated_drug_items = list(constrained_drug_items.items()) + unconstrained_drug_items
 
     if algorithm == 'greedy':
-        greedy_algorithm(updated_drug_items)
+        greedy_algorithm(updated_drug_items,number_of_carts)
 
 def greedy_algorithm(
-    drug_items # Updated drug items (with the unit constraints)
+    drug_items, # Updated drug items (with the unit constraints)
+    num_carts
 ):
     sorted_units = sorted(drug_items, key=lambda x: x[1], reverse=True)
     carts = [[] for _ in range(num_carts)]
