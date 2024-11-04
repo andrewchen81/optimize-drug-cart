@@ -16,7 +16,7 @@ if uploaded_file is not None:
     # Select the column for drug unit
     drug_unit_col = st.selectbox("Select Drug Unit Column", df.columns)
     # Display all unique drug units
-    unique_drug_units = df[drug_unit_col].unique()
+    unique_drug_units = sorted(df[drug_unit_col].unique())
     st.write(f"Unique Drug Units in {drug_unit_col}:")
     st.write(unique_drug_units)
 
@@ -48,7 +48,7 @@ if uploaded_file is not None:
     num_carts = st.number_input("Number of Carts", min_value=1, max_value=99999, value=1, step=1)
 
     # User Selection for the Optimization Algorithm
-    algorithm = st.selectbox("Select Algorithm", ["greedy"])
+    algorithm = st.selectbox("Select Algorithm", ["greedy", "best-fit decreasing"])
 
     # Call the function to optimize cart allocation
     df_optimized_cart = optimize_cart_allocation(
