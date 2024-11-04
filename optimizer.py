@@ -20,8 +20,8 @@ def greedy_algorithm(
     return carts,cart_weights
 
 def best_fit_decreasing_algorithm(
-    drug_items, # Updated drug items (with the unit constraints)
-    number_of_carts
+  drug_items, # Updated drug items (with the unit constraints)
+  number_of_carts
 ):
     sorted_units = sorted(drug_items, key=lambda x: x[1], reverse=True)
     carts = [[] for _ in range(number_of_carts)]
@@ -43,14 +43,13 @@ def best_fit_decreasing_algorithm(
 
     return carts, cart_weights
 
-
 def optimize_cart_allocation(
     df, # Input DF with Drug Unit & Drug Count
     drug_unit_col, # drug unit col in df
     drug_count_col, # drug count col in df
     unit_constraint_dict, # drug unit combination constraint
     number_of_carts, # number of carts to distribute drug units
-    algorithm = 'greedy' # algorithm of choice
+    algorithm # algorithm of choice
 ):
     drug_units = [str(x).strip() for x in df[drug_unit_col]]
     medication_count = [float(x) for x in df['Medication_Count'].tolist()]
@@ -77,6 +76,25 @@ def optimize_cart_allocation(
     df_optimized_cart = pd.DataFrame(cart_data, index=["Drug Units", "Cart Total Weight"])
     print(df_optimized_cart.T.reset_index().rename(columns={'index':'Cart Assignment'}))
     return df_optimized_cart
+
+    elif algorithm == 'best-fit decreasing':
+        carts, cart_weights = best_fit_decreasing_algorithm(updated_drug_items, number_of_carts)
+    else:
+        raise ValueError(f"Unsupported algorithm: {algorithm}")
+
+    if carts is None or cart_weights is None:
+        raise RuntimeError("Failed to generate carts and cart weights")
+
+    cart_data = {}
+    for i in range(number_of_carts):
+        cart_data[f"Cart{i + 1}"] = [
+            ", ".join([sub_item.strip() for item in carts[i] for sub_item in item[0].split('&')]), # Drug units as a comma-separated string
+            cart_weights[i]  # Total weight of the cart
+        ]
+
+    df_optimized_cart = pd.DataFrame(cart_data, index=["Drug Units", "Cart Total Weight"])
+    # print(df_optimized_cart.T.reset_index().rename(columns={'index':'Cart Assignment'}))
+    return df_optimized_cart.T.reset_index().rename(columns={'index':'Cart Assignment'})
 
 
 
