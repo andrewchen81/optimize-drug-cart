@@ -2,6 +2,8 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
+import re
+import ast
 
 def greedy_algorithm(
     drug_items, # Updated drug items (with the unit constraints)
@@ -35,21 +37,32 @@ def optimize_cart_allocation(
     updated_drug_items = list(constrained_drug_items.items()) + unconstrained_drug_items
 
     if algorithm == 'greedy':
-        return greedy_algorithm(updated_drug_items,number_of_carts)
+        carts, cart_weights = greedy_algorithm(updated_drug_items,number_of_carts)
+
+    cart_data = {}
+    for i in range(number_of_carts):
+        cart_data[f"Cart{i + 1}"] = [
+            ", ".join([sub_item.strip() for item in carts[i] for sub_item in item[0].split('&')]), # Drug units as a comma-separated string
+            cart_weights[i]  # Total weight of the cart
+        ]
+
+    df_optimized_cart = pd.DataFrame(cart_data, index=["Drug Units", "Cart Total Weight"])
+    # print(df_optimized_cart)
+    return df_optimized_cart
 
 
 
 
 
 # df = pd.read_csv('/Users/andrewchen/Documents/optimize_drug_cart_project/daily_files/drug_medication_count_20241018.csv')
-# unit_constraints = {
-# 	'C+G': ['C', 'G'],
-# 	'B+F': ['B', 'F'],
-# 	'1B+1C': ['1B', '1C'],
-# 	'1A+J+K+N+Z': ['1A', 'J', 'K', 'N', 'Z']
-# }
-# num_carts = 6
+# #
+# unit_constraints_input = "[C,G], [B,F], [1B,1C], [1A,J,K,N,Z]"
+# unit_constraints_input_clean = unit_constraints_input.replace(' ','')
+# unit_constraints_input_clean = re.sub(r'(\b[^,\[\]]+\b)', r"'\1'", unit_constraints_input_clean)
+# unit_constraints = {' & '.join(x):x for x in ast.literal_eval(unit_constraints_input_clean)}
 #
+# num_carts = 6
+# #
 # optimize_cart_allocation(
 #     df=df,
 #     drug_unit_col = 'Drug Unit',
@@ -58,4 +71,4 @@ def optimize_cart_allocation(
 #     number_of_carts = num_carts,
 #     algorithm = 'greedy'
 # )
-#
+# #
