@@ -18,7 +18,7 @@ if uploaded_file is not None:
     # Display all unique drug units
     unique_drug_units = sorted(df[drug_unit_col].unique())
     st.write(f"Unique Drug Units in {drug_unit_col}:")
-    st.write(unique_drug_units)
+    st.write(', '.join(unique_drug_units))
 
     # Select the column for drug count
     drug_count_col = st.selectbox("Select Drug Count Column", df.columns)
