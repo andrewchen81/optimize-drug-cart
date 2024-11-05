@@ -40,10 +40,12 @@ if uploaded_file is not None:
         "Enter unit constraints in the format [A,B], [1C,1D,1E],...",
         value = "[A,B], [1C,1D,1E]"
     )
-
-    unit_constraints_input_clean = unit_constraints_input.replace(' ','')
-    unit_constraints_input_clean = re.sub(r'(\b[^,\[\]]+\b)', r"'\1'", unit_constraints_input_clean)
-    unit_constraints = {' & '.join(x):x for x in ast.literal_eval(unit_constraints_input_clean)}
+    if unit_constraints_input == 'None':
+        unit_constraints = 'None'
+    else:
+        unit_constraints_input_clean = unit_constraints_input.replace(' ','')
+        unit_constraints_input_clean = re.sub(r'(\b[^,\[\]]+\b)', r"'\1'", unit_constraints_input_clean)
+        unit_constraints = {' & '.join(x):x for x in ast.literal_eval(unit_constraints_input_clean)}
 
     # User Input for Number of Carts
     num_carts = st.number_input("Number of Carts", min_value=1, max_value=99999, value=1, step=1)

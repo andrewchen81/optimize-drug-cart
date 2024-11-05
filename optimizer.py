@@ -48,20 +48,24 @@ def optimize_cart_allocation(
     drug_units = [str(x).strip() for x in df[drug_unit_col]]
     medication_count = [float(x) for x in df[drug_count_col].tolist()]
 
-    # Clean and apply unit constraints
-    clean_unit_constraint_dict = {
-        key: [x for x in value if x in drug_units] for key, value in unit_constraint_dict.items()
-    }
-    constrained_drug_items = {
-        key: sum(medication_count[drug_units.index(x)] for x in value)
-        for key, value in clean_unit_constraint_dict.items()
-    }
-    unconstrained_drug_items = [
-        (x, medication_count[drug_units.index(x)])
-        for x in drug_units
-        if all(x not in group for group in clean_unit_constraint_dict.values())
-    ]
-    updated_drug_items = list(constrained_drug_items.items()) + unconstrained_drug_items
+    if unit_constraint_dict == 'None':
+        updated_drug_items = [(x, weight) for x, weight in zip(drug_units, medication_count)]
+    else:
+        # Clean and apply unit constraints
+        clean_unit_constraint_dict = {
+            key: [x for x in value if x in drug_units] for key, value in unit_constraint_dict.items()
+        }
+        constrained_drug_items = {
+            key: sum(medication_count[drug_units.index(x)] for x in value)
+            for key, value in clean_unit_constraint_dict.items()
+        }
+        unconstrained_drug_items = [
+            (x, medication_count[drug_units.index(x)])
+            for x in drug_units
+            if all(x not in group for group in clean_unit_constraint_dict.values())
+        ]
+        updated_drug_items = list(constrained_drug_items.items()) + unconstrained_drug_items
+
 
     # Choose the algorithm
     if algorithm == 'greedy':
